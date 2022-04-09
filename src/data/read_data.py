@@ -33,23 +33,27 @@ class Data:
         """
 
     @staticmethod
-    def read_termframe_data():
-        colls = ["en", "hr", "sl"]
-        base_path = "../data/oznaceno/"
+    def _map_relation_to_pair(relation, e1, e2):
+        pair =  None
 
-        data = {}
-        count = {}
+    @staticmethod
+    def _process_wcl_sentence(sentence):
+        
+        sent = sentence.split("<RGET>")[1]
+        return sent
 
-        for coll in colls:
-            curr_path = base_path + coll
-            files = [f for f in listdir(curr_path) if isfile(join(curr_path, f))]
-            count[coll] = 0
+    def read_wcl_data(self):
+        lines = []
+        data_dir = "../data/wcl_datasets_v1.2/wikipedia/wiki_good.txt"
 
-            for fl in files:
-                d = open(f"{curr_path}/{fl}", "r")
-                sents = d.read()
+        with open(data_dir, 'r') as f:
+            lines = f.read().split("# ")
 
-        print(count)
+        data = []
+        
+        for line in lines[1:]:
+            data.append(self._process_wcl_sentence(line))
 
+        return data
 
 
