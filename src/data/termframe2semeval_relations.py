@@ -25,7 +25,8 @@ def convert(mapping, annotated_file, output_file):
         f_ann.readline()
         f_ann.readline()
 
-        if len(relations_mapped) != 1: continue # Skip entities with 0 relations or more than 1 relation
+        #if len(relations_mapped) == 0: continue # Skip entities with 0 mapped relations
+        if len(relations_mapped) != 1: continue # Skip entities with 0 mapped relations or more than 1 relation
 
         f_out.write(sentence)
         f_out.write(" ".join(relations_mapped))
@@ -46,9 +47,9 @@ mapping = {
         "HAS_COMPOSITION": ["Content-Container", "Entity-Origin"],
         "CONTAINS": ["Content-Container", "Component-Whole", "Member-Collection"],
         "HAS_LOCATION": ["Entity-Origin"]
-    }
+}
 
-annotated_file = "AnnotatedDefinitions_EN.txt"
-output_file = "AnnotatedDefinitions_EN_mapped.txt"
+annotated_file = "AnnotatedDefinitions_EN_all.txt"
+output_file = "AnnotatedDefinitions_EN_mapped_single.txt"
 
 convert(mapping, annotated_file, output_file)

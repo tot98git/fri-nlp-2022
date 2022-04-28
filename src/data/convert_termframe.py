@@ -96,6 +96,6 @@ def convert_termframe(annotated_definitions_path, output_file):
 
 
 annotated_definitions_path = "../../data/Karst Annotated Definitions/AnnotatedDefinitions/EN/"
-output_file = "AnnotatedDefinitions_EN.txt"
+output_file = "AnnotatedDefinitions_EN_all.txt"
 
 convert_termframe(annotated_definitions_path, output_file)
