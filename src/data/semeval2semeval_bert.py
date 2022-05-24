@@ -20,6 +20,7 @@ def convert(mapping, input_file, output_file):
         if len(relations) != 1:
             f_in.readline()
             f_in.readline()
+            print("Skipped")
             continue
         if not sentence or not relations: break
         relation = relations[0].replace("\n", "")
@@ -53,7 +54,7 @@ mapping = {
     "Member-Collection(e2,e1)": [16, "collection\tmember", 2]
 }
 
-annotated_file = "AnnotatedDefinitions_EN_mapped_single.txt"
-output_file = "AnnotatedDefinitions_EN_mapped_rbert.tsv"
+annotated_file = "termframe_SE_train_sl.txt"
+output_file = "termframe_SE_train_sl.tsv"
 
 convert(mapping, annotated_file, output_file)

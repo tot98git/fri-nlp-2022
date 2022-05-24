@@ -1,0 +1,10 @@
+spacy
+pandas
+numpy
+networkx
+nltk
+sklearn
+xgboost==0.90
+gensim
+category_encoders
+pickle5
