@@ -49,7 +49,7 @@ mapping = {
         "HAS_LOCATION": ["Entity-Origin"]
 }
 
-annotated_file = "AnnotatedDefinitions_EN_all.txt"
-output_file = "AnnotatedDefinitions_EN_mapped_single.txt"
+annotated_file = "../../data/Model input files/sl/AnnotatedDefinitions_SL_all_split.txt"
+output_file = "termframe_SE_train_sl.txt"
 
 convert(mapping, annotated_file, output_file)

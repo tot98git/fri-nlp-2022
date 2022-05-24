@@ -30,72 +30,86 @@ def convert_termframe(annotated_definitions_path, output_file):
     f = open(output_file, "w", encoding="utf-8")
 
     count = 0
+    count_all = 0
     skipped = 0
 
-    for num in range(1, 50):
+    """for num in range(1, 54):
         print("Iteration", num)
-        #if num == 2: continue
+        if num == 2: continue
 
-        def_elements = pd.read_csv(annotated_definitions_path + "defs-en-%s__DEF_ELEMENTS.csv" % str(num), encoding="utf-8")
+        def_elements = pd.read_csv(annotated_definitions_path + "defs-sl-%s__DEF_ELEMENTS.csv" % str(num), encoding="utf-8")
+        rel_rel_frame = pd.read_csv(annotated_definitions_path + "defs-sl-%s__REL_REL_FRAME.csv" % str(num), encoding="utf-8")"""
+    def_elements = pd.read_csv(annotated_definitions_path + "DEF_ELEMENTS.csv", encoding="utf-8")
+    rel_rel_frame = pd.read_csv(annotated_definitions_path + "REL_REL_FRAME.csv", encoding="utf-8")
 
-        rel_rel_frame = pd.read_csv(annotated_definitions_path + "defs-en-%s__REL_REL_FRAME.csv" % str(num), encoding="utf-8")
+    for i, row in def_elements.iterrows():
 
-        for i, row in def_elements.iterrows():
+        # Get sentence, definiendum, and genus
+        sentence = row["SENTENCE"]
+        sentence_original = row["SENTENCE"]
+        definiendum = row["DEFINIENDUM"]
+        genus = row["GENUS"]
+        try:
+            index_definiendum = re.search(r"\b(" + definiendum + r")\b", sentence).start()
+            index_genus = re.search(r"\b(" + genus + r")\b", sentence).start()
+        except Exception as e:
+            skipped += 1
+            continue
 
-            # Get sentence, definiendum, and genus
-            sentence = row["SENTENCE"]
-            sentence_original = row["SENTENCE"]
-            definiendum = row["DEFINIENDUM"]
-            genus = row["GENUS"]
-            try:
-                index_definiendum = re.search(r"\b(" + definiendum + r")\b", sentence).start()
-                index_genus = re.search(r"\b(" + genus + r")\b", sentence).start()
-            except Exception as e:
-                skipped += 1
-                continue
+        # Set first occuring definiendum/genus as e1 and other as e2
+        if index_definiendum < index_genus:
+            e1 = definiendum
+            e2 = genus
+        else:
+            e1 = genus
+            e2 = definiendum
 
-            # Set first occuring definiendum/genus as e1 and other as e2
-            if index_definiendum < index_genus:
-                e1 = definiendum
-                e2 = genus
-            else:
-                e1 = genus
-                e2 = definiendum
+        try:
+            sentence = find_and_replace(sentence, e1, "<e1>", "</e1>")
+            sentence = find_and_replace(sentence, e2, "<e2>", "</e2>")
+        except Exception as e:
+            skipped += 1
+            continue
 
-            try:
-                sentence = find_and_replace(sentence, e1, "<e1>", "</e1>")
-                sentence = find_and_replace(sentence, e2, "<e2>", "</e2>")
-            except Exception as e:
-                skipped += 1
-                continue
+        # Find relation(s) for the sentence
+        relation_num = 0
+        relations = set()
+        for j, row2 in rel_rel_frame.iterrows():
+            rel_tok = row2["REL_TOK"]
+            if pd.isna(rel_tok): continue
+            if rel_tok.replace(" ", "") in sentence_original.replace(" ", ""):
+                if index_definiendum < index_genus: relations.add("%s(e1,e2)" % row2["REL_LABEL"])
+                else:
+                    relations.add("%s(e2,e1)" % row2["REL_LABEL"])
+                relation_num += 1
+        
+        if relation_num == 0:
+        #if relation_num != 1:
+            skipped += 1
+            continue
 
-            # Find relation(s) for the sentence
-            relation_num = 0
-            relations = set()
-            for j, row2 in rel_rel_frame.iterrows():
-                rel_tok = row2["REL_TOK"]
-                if pd.isna(rel_tok): continue
-                if rel_tok.replace(" ", "") in sentence_original.replace(" ", ""):
-                    if index_definiendum < index_genus: relations.add("%s(e1,e2)" % row2["REL_LABEL"])
-                    else:
-                        relations.add("%s(e2,e1)" % row2["REL_LABEL"])
-                    relation_num += 1
-            
-            if relation_num == 0:
-                skipped += 1
-                continue
+        # Write all relations in a single line
+        f.write("%d\t%s\n" % (count, sentence))
+        f.write(" ".join(relations))
+        f.write("\nComment: \n\n")
 
+        # Write each relation as different sentence (with same ID)
+        """for relation in relations:
             f.write("%d\t%s\n" % (count, sentence))
-            f.write(" ".join(relations))
+            f.write(relation)
             f.write("\nComment: \n\n")
+            count_all += 1"""
 
-            count += 1
+        count += 1
 
     f.close()
     print("Skipped %d records" % skipped)
+    print("Processed %d all records" % count_all)
+    print("Processed %d unique records" % count)
 
 
-annotated_definitions_path = "../../data/Karst Annotated Definitions/AnnotatedDefinitions/EN/"
-output_file = "AnnotatedDefinitions_EN_all.txt"
+#annotated_definitions_path = "../../data/Karst Annotated Definitions/AnnotatedDefinitions/SL/"
+annotated_definitions_path = "../../data/TermFrame annotated additional/sl/"
+output_file = "AdditionalAnnotatedDefinitions_SL_all.txt"
 
 convert_termframe(annotated_definitions_path, output_file)
