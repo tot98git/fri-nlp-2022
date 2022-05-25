@@ -4,6 +4,6 @@ This is the repository accompanying the paper <strong>Automatic semantic relatio
 
 Models were run independently for different experiments. They can be found on `src/models` with their respective instructions.
 
-MTB-BERT model is available separately [here](https://github.com/ozbej/BERT-Relation-Extraction).  
+MTB-BERT model is available separately [here](https://github.com/ozbej/BERT-Relation-Extraction) with clear instructions on how to easily install prerequisites and run all the analysis.  
 Entity Attention Bi-LSTM is available [here](https://github.com/roomylee/entity-aware-relation-classification).  
 R-BERT is available [here](https://github.com/jmshen1994/R-BERT).
