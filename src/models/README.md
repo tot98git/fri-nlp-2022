@@ -2,7 +2,6 @@
 
 ## Relation extraction
 
-Model based on spacy.
 In the folder `relation-extraction` are models based on spacy.
 
 ## SPN4RE
